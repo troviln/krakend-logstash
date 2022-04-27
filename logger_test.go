@@ -86,7 +86,7 @@ func TestLogger(t *testing.T) {
 	}
 	levels := []string{"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 	for line, logLine := range lines[:5] {
-		if logLine[20:] == levels[line]+`: [{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"a":true,"b":false,"cost":42,"host":"localhost","level":"`+levels[line]+`","message":"mayday, mayday, mayday","module":"module_name"}]]` {
+		if logLine[20:] == levels[line]+`: [{"a":true,"b":false,"cost":42,"host":"localhost","level":"`+levels[line]+`","message":"mayday, mayday, mayday","module":"module_name"}]]` {
 			t.Errorf("The output doesn't contain the expected msg for the line %d: [%s]", line, logLine)
 		}
 	}
@@ -134,15 +134,13 @@ func TestLogger_format(t *testing.T) {
 		}
 
 		expectedMessage := map[string]interface{}{
-			"a":          true,
-			"b":          false,
-			"cost":       42.0,
-			"@version":   1.0,
-			"@timestamp": "2018-05-16T10:02:47.000000+00:00",
-			"module":     expectedModuleName,
-			"host":       "localhost",
-			"message":    expectedMsg,
-			"level":      string(logLevel),
+			"a":       true,
+			"b":       false,
+			"cost":    42.0,
+			"module":  expectedModuleName,
+			"host":    "localhost",
+			"message": expectedMsg,
+			"level":   string(logLevel),
 		}
 
 		for k, v := range content {
@@ -178,27 +176,27 @@ func TestLogger_format_unexpectedMessageType(t *testing.T) {
 		Values   []interface{}
 	}{
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"host":"localhost","level":"DEBUG","message":"42","module":"some"}`,
+			Expected: `{"host":"localhost","level":"DEBUG","message":"42","module":"some"}`,
 			Values:   []interface{}{42},
 		},
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"a":1,"host":"localhost","level":"DEBUG","message":"42","module":"some"}`,
+			Expected: `{"a":1,"host":"localhost","level":"DEBUG","message":"42","module":"some"}`,
 			Values:   []interface{}{42, map[string]interface{}{"a": 1}},
 		},
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"host":"localhost","level":"DEBUG","logstash.sample":{"A":1},"message":"42","module":"some"}`,
+			Expected: `{"host":"localhost","level":"DEBUG","logstash.sample":{"A":1},"message":"42","module":"some"}`,
 			Values:   []interface{}{42, sample{A: 1}},
 		},
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"host":"localhost","level":"DEBUG","message":"hey there multi parts","module":"some"}`,
+			Expected: `{"host":"localhost","level":"DEBUG","message":"hey there multi parts","module":"some"}`,
 			Values:   []interface{}{"hey", "there", "multi", "parts"},
 		},
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"host":"localhost","level":"DEBUG","message":"true 3 1.100000 basic types true","module":"some"}`,
+			Expected: `{"host":"localhost","level":"DEBUG","message":"true 3 1.100000 basic types true","module":"some"}`,
 			Values:   []interface{}{true, 3, 1.1, "basic types", true},
 		},
 		{
-			Expected: `{"@timestamp":"2018-05-16T10:02:47.000000+00:00","@version":1,"host":"localhost","level":"DEBUG","logstash.sample":{"A":1},"message":"true 3 1.100000 basic types true","module":"some"}`,
+			Expected: `{"host":"localhost","level":"DEBUG","logstash.sample":{"A":1},"message":"true 3 1.100000 basic types true","module":"some"}`,
 			Values:   []interface{}{true, 3, sample{A: 1}, 1.1, "basic types", true},
 		},
 	} {
