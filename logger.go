@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	gologging "github.com/devopsfaith/krakend-gologging/v2"
 	"github.com/luraproject/lura/v2/config"
@@ -64,8 +63,6 @@ type Logger struct {
 	serviceName string
 }
 
-var now = time.Now
-
 func (l *Logger) format(logLevel LogLevel, v ...interface{}) ([]byte, error) {
 	if len(v) == 0 {
 		return []byte{}, ErrNothingToLog
@@ -101,8 +98,6 @@ func (l *Logger) format(logLevel LogLevel, v ...interface{}) ([]byte, error) {
 		}
 	}
 
-	record["@version"] = 1
-	record["@timestamp"] = now().Format(ISO_8601)
 	record["module"] = l.serviceName
 	record["host"] = hostname
 	record["message"] = msg
@@ -173,6 +168,4 @@ const (
 	LEVEL_WARNING  = "WARNING"
 	LEVEL_ERROR    = "ERROR"
 	LEVEL_CRITICAL = "CRITICAL"
-
-	ISO_8601 = "2006-01-02T15:04:05.000000-07:00"
 )
