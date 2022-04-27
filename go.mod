@@ -1,4 +1,4 @@
-module github.com/devopsfaith/krakend-logstash/v2
+module github.com/troviln/krakend-logstash
 
 go 1.17
 
